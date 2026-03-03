@@ -1,0 +1,11 @@
+main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 70vh;
+}
+
+.logo-container {
+  max-width: 500px;
+}

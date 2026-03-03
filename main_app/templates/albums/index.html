@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/albums/album-index.css' %}" />
+{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+  <h1>Album List</h1>
+</section>
+
+<section class="card-container">
+  {% for album in albums %}
+  <div class="card">
+    <div class="card-content">
+      <h2 class="card-title">{{ album.title }}</h2>
+      <p>{{ album.artist }} ({{ album.year }})</p>
+
+      {% if album.rating >= 9 %}
+        <p><strong>Rating:</strong> {{ album.rating }}/10 ⭐</p>
+      {% else %}
+        <p><strong>Rating:</strong> {{ album.rating }}/10</p>
+      {% endif %}
+
+      <p><small>{{ album.notes }}</small></p>
+    </div>
+  </div>
+  {% endfor %}
+</section>
+
+{% endblock %}
