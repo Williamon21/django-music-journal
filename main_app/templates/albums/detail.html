@@ -12,6 +12,10 @@
     <h2>{{ album.artist }} ({{ album.year }})</h2>
     <p><strong>Rating:</strong> {{ album.rating }}/10</p>
     <p>{{ album.notes }}</p>
+
+    <div class="album-actions">
+      <a href="{% url 'album-update' album.id %}" class="btn warn">Edit</a>
+      <a href="{% url 'album-delete' album.id %}" class="btn danger">Delete</a>
   </div>
 </section>
 {% endblock %}
