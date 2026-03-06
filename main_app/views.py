@@ -1,47 +1,77 @@
 from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
+from django.contrib.auth.views import LoginView
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 from .models import Album, Tag
 from .forms import ListeningForm
 
 
-def home(request):
-    return render(request, 'home.html')
+class Home(LoginView):
+    template_name = 'home.html'
 
 
 def about(request):
     return render(request, 'about.html')
 
 
+@login_required
 def album_index(request):
-    albums = Album.objects.all()
+    albums = Album.objects.filter(user=request.user)
     return render(request, 'albums/index.html', {'albums': albums})
 
 
+@login_required
 def album_detail(request, album_id):
     album = Album.objects.get(id=album_id)
     listening_form = ListeningForm()
+    tags_album_doesnt_have = Tag.objects.exclude(
+        id__in=album.tags.all().values_list('id')
+    )
+
     return render(request, 'albums/detail.html', {
         'album': album,
-        'listening_form': listening_form
+        'listening_form': listening_form,
+        'tags': tags_album_doesnt_have
     })
 
 
-class AlbumCreate(CreateView):
+@login_required
+def associate_tag(request, album_id, tag_id):
+    Album.objects.get(id=album_id).tags.add(tag_id)
+    return redirect('album-detail', album_id=album_id)
+
+
+@login_required
+def remove_tag(request, album_id, tag_id):
+    Album.objects.get(id=album_id).tags.remove(tag_id)
+    return redirect('album-detail', album_id=album_id)
+
+
+class AlbumCreate(LoginRequiredMixin, CreateView):
     model = Album
-    fields = '__all__'
+    fields = ['title', 'artist', 'year', 'rating', 'notes']
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
 
-class AlbumUpdate(UpdateView):
+class AlbumUpdate(LoginRequiredMixin, UpdateView):
     model = Album
     fields = ['artist', 'year', 'rating', 'notes']
 
 
-class AlbumDelete(DeleteView):
+class AlbumDelete(LoginRequiredMixin, DeleteView):
     model = Album
     success_url = '/albums/'
 
 
+@login_required
 def add_listening(request, album_id):
     form = ListeningForm(request.POST)
     if form.is_valid():
@@ -51,24 +81,40 @@ def add_listening(request, album_id):
     return redirect('album-detail', album_id=album_id)
 
 
-class TagCreate(CreateView):
+class TagCreate(LoginRequiredMixin, CreateView):
     model = Tag
     fields = '__all__'
 
 
-class TagList(ListView):
+class TagList(LoginRequiredMixin, ListView):
     model = Tag
 
 
-class TagDetail(DetailView):
+class TagDetail(LoginRequiredMixin, DetailView):
     model = Tag
 
 
-class TagUpdate(UpdateView):
+class TagUpdate(LoginRequiredMixin, UpdateView):
     model = Tag
     fields = ['name', 'color']
 
 
-class TagDelete(DeleteView):
+class TagDelete(LoginRequiredMixin, DeleteView):
     model = Tag
     success_url = '/tags/'
+
+
+def signup(request):
+    error_message = ''
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('album-index')
+        else:
+            error_message = 'Invalid sign up - try again'
+
+    form = UserCreationForm()
+    context = {'form': form, 'error_message': error_message}
+    return render(request, 'signup.html', context)

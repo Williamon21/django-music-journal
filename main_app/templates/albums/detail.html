@@ -8,7 +8,6 @@
 {% block content %}
 
 <section class="album-container">
-
   <div class="album-details">
     <h1>{{ album.title }}</h1>
     <h2>{{ album.artist }} ({{ album.year }})</h2>
@@ -20,18 +19,13 @@
       <a href="{% url 'album-delete' album.id %}" class="btn danger">Delete</a>
     </div>
   </div>
-
 </section>
 
-
 <div class="listenings-container">
-
   <section class="listenings">
-
     <h2>Listening History</h2>
 
     <h3>Add a Listening</h3>
-
     <form
       action="{% url 'add-listening' album.id %}"
       method="post"
@@ -43,38 +37,74 @@
       <button type="submit" class="btn submit">Add Listening</button>
     </form>
 
-
     <h3>Past Listenings</h3>
-
     {% if album.listening_set.all.count %}
-    <table>
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Type</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        {% for listening in album.listening_set.all %}
-        <tr>
-          <td>{{ listening.date }}</td>
-          <td>{{ listening.get_listen_type_display }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for listening in album.listening_set.all %}
+          <tr>
+            <td>{{ listening.date }}</td>
+            <td>{{ listening.get_listen_type_display }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     {% else %}
-
-    <div class="subsection-content">
-      <p>⚠️ No listening history yet.</p>
-    </div>
-
+      <div class="subsection-content">
+        <p>⚠️ No listening history yet.</p>
+      </div>
     {% endif %}
-
   </section>
 
+  <section class="tags">
+    <h2>Tags</h2>
+
+    <h3>{{ album.title }}'s Tags</h3>
+    <div class="subsection-content">
+      {% if album.tags.count %}
+        {% for tag in album.tags.all %}
+          <div class="toy-container">
+            <div class="color-block" style="background-color: {{ tag.color }}"></div>
+            <a href="{% url 'tag-detail' tag.id %}">
+              <p>{{ tag.color }} {{ tag.name }}</p>
+            </a>
+            <form action="{% url 'remove-tag' album.id tag.id %}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="btn danger">Remove Tag</button>
+            </form>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="no-toys">{{ album.title }} doesn't have any tags yet!</p>
+      {% endif %}
+    </div>
+
+    <h3>Available Tags</h3>
+    <div class="subsection-content">
+      {% if tags.count %}
+        {% for tag in tags.all %}
+          <div class="toy-container">
+            <div class="color-block" style="background-color: {{ tag.color }}"></div>
+            <a href="{% url 'tag-detail' tag.id %}">
+              <p>{{ tag.color }} {{ tag.name }}</p>
+            </a>
+            <form action="{% url 'associate-tag' album.id tag.id %}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="btn submit">Add Tag</button>
+            </form>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="all-toys">{{ album.title }} already has all available tags 🥳</p>
+      {% endif %}
+    </div>
+  </section>
 </div>
 
 {% endblock %}

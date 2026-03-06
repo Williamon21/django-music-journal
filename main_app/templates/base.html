@@ -27,16 +27,26 @@
   </div>
 
   <nav>
-    <ul>
-        <li><a href="{% url 'home' %}">Home</a></li>
-        <li><a href="{% url 'album-index' %}">Albums</a></li>
-        <li><a href="{% url 'album-index' %}">All Albums</a></li>
-        <li><a href="{% url 'tag-index' %}">All Tags</a></li>
-        <li><a href="{% url 'album-create' %}">Add an Album</a></li>
-        <li><a href="{% url 'tag-create' %}">Add a Tag</a></li>
-        <li><a href="{% url 'about' %}">About</a></li>
-    </ul>
-  </nav>
+  <ul>
+    {% if user.is_authenticated %}
+      <li><a href="{% url 'album-index' %}">All Albums</a></li>
+      <li><a href="{% url 'tag-index' %}">All Tags</a></li>
+      <li><a href="{% url 'album-create' %}">Add an Album</a></li>
+      <li><a href="{% url 'tag-create' %}">Add a Tag</a></li>
+      <li><a href="{% url 'about' %}">About</a></li>
+      <li>
+        <form id="logout-form" method="post" action="{% url 'logout' %}">
+          {% csrf_token %}
+          <button type="submit">Log Out</button>
+        </form>
+      </li>
+    {% else %}
+      <li><a href="{% url 'about' %}">About</a></li>
+      <li><a href="{% url 'home' %}">Login</a></li>
+      <li><a href="{% url 'signup' %}">Sign Up</a></li>
+    {% endif %}
+  </ul>
+</nav>
 </header>
 
 <main>
