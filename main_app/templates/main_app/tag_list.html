@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/tags/tag-index.css' %}" />
+{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+  <h1>All Album Tags</h1>
+</section>
+
+<section class="card-container">
+  {% for tag in tag_list %}
+    <div class="card" style="border-color: {{ tag.color }}">
+      <div class="card-bg" style="background-color: {{ tag.color }}"></div>
+      <a href="{% url 'tag-detail' tag.id %}">
+        <div class="card-content">
+          <h2>{{ tag.name }}</h2>
+          <p>A {{ tag.color }} tag</p>
+        </div>
+      </a>
+    </div>
+  {% endfor %}
+</section>
+
+{% endblock %}

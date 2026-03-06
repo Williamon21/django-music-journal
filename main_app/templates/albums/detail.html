@@ -6,7 +6,9 @@
 {% endblock %}
 
 {% block content %}
+
 <section class="album-container">
+
   <div class="album-details">
     <h1>{{ album.title }}</h1>
     <h2>{{ album.artist }} ({{ album.year }})</h2>
@@ -16,6 +18,63 @@
     <div class="album-actions">
       <a href="{% url 'album-update' album.id %}" class="btn warn">Edit</a>
       <a href="{% url 'album-delete' album.id %}" class="btn danger">Delete</a>
+    </div>
   </div>
+
 </section>
+
+
+<div class="listenings-container">
+
+  <section class="listenings">
+
+    <h2>Listening History</h2>
+
+    <h3>Add a Listening</h3>
+
+    <form
+      action="{% url 'add-listening' album.id %}"
+      method="post"
+      class="subsection-content"
+      autocomplete="off"
+    >
+      {% csrf_token %}
+      {{ listening_form.as_p }}
+      <button type="submit" class="btn submit">Add Listening</button>
+    </form>
+
+
+    <h3>Past Listenings</h3>
+
+    {% if album.listening_set.all.count %}
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Type</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for listening in album.listening_set.all %}
+        <tr>
+          <td>{{ listening.date }}</td>
+          <td>{{ listening.get_listen_type_display }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    {% else %}
+
+    <div class="subsection-content">
+      <p>⚠️ No listening history yet.</p>
+    </div>
+
+    {% endif %}
+
+  </section>
+
+</div>
+
 {% endblock %}

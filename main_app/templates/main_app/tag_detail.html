@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/tags/tag-detail.css' %}" />
+{% endblock %}
+
+{% block content %}
+
+<div class="card" style="border-color: {{ tag.color }}">
+  <div class="card-bg" style="background-color: {{ tag.color }}"></div>
+  <div class="card-content">
+    <h2>{{ tag.name }}</h2>
+    <p>A {{ tag.color }} tag</p>
+  </div>
+</div>
+
+<a href="{% url 'tag-update' tag.id %}" class="btn warn">Edit</a>
+<a href="{% url 'tag-delete' tag.id %}" class="btn danger">Delete</a>
+
+{% endblock %}
