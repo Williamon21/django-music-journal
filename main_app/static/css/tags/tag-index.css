@@ -1,56 +1,46 @@
+.page-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.page-header h1 {
+  font-size: 2.6rem;
+}
+
 .card-container {
-  padding: 0 40px;
   display: flex;
-  justify-content: center;
+  gap: 20px;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .card {
-  width: 224px;
-  height: 224px;
-  margin: 10px;
-  border: solid 2px;
-  box-shadow: var(--card-box-shadow);
-  position: relative;
+  width: 220px;
+  background: #181818;
+  border: 1px solid #2a2a2a;
+  border-radius: 14px;
+  padding: 18px;
+  text-align: center;
+  transition: transform 0.2s ease, background 0.2s ease;
 }
 
-.card-bg {
-  opacity: 0.4;
-  position: absolute;
-  display: inline-flex;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+.card:hover {
+  transform: translateY(-3px);
+  background: #202020;
 }
 
-.card-content {
-  padding: 15px;
-  height: 100%;
-  width: 100%;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
-  flex-direction: column;
-}
-
-.card > a {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: inline-block;
+.card a {
   text-decoration: none;
-  color: var(--text-color);
+  color: inherit;
 }
 
-.card h2 {
-  margin: 7px 0;
-  font-size: var(--font-xl);
+.tag-name {
+  font-size: 1.8rem;
+  font-weight: 600;
 }
 
-.card p {
-  margin: 0;
-  font-size: var(--font-reg);
+.tag-color {
+  margin-top: 10px;
+  font-size: 1.2rem;
+  color: #cfcfcf;
 }

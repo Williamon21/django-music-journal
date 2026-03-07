@@ -9,6 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Album, Tag
 from .forms import ListeningForm
+from .services.spotify_api import search_spotify_albums
 
 
 class Home(LoginView):
@@ -38,6 +39,44 @@ def album_detail(request, album_id):
         'listening_form': listening_form,
         'tags': tags_album_doesnt_have
     })
+
+
+@login_required
+def album_search(request):
+    query = request.GET.get('q', '')
+    results = []
+
+    if query:
+        try:
+            results = search_spotify_albums(query)
+        except Exception:
+            results = []
+
+    return render(request, 'albums/search.html', {
+        'query': query,
+        'results': results,
+    })
+
+
+@login_required
+def spotify_import(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        artist = request.POST.get('artist')
+        year = request.POST.get('year')
+
+        album = Album.objects.create(
+            title=title,
+            artist=artist,
+            year=year,
+            rating=0,
+            notes='Imported from Spotify',
+            user=request.user
+        )
+
+        return redirect('album-detail', album_id=album.id)
+
+    return redirect('album-search')
 
 
 @login_required
