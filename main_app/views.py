@@ -7,9 +7,9 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import Album, Tag
+from .models import Album, Tag, Song
 from .forms import ListeningForm
-from .services.spotify_api import search_spotify_albums
+from .services.spotify_api import search_spotify_albums, search_spotify_tracks
 
 
 class Home(LoginView):
@@ -30,65 +30,19 @@ def album_index(request):
 def album_detail(request, album_id):
     album = Album.objects.get(id=album_id)
     listening_form = ListeningForm()
+
     tags_album_doesnt_have = Tag.objects.exclude(
         id__in=album.tags.all().values_list('id')
     )
 
+    songs = Song.objects.filter(album=album)
+
     return render(request, 'albums/detail.html', {
         'album': album,
         'listening_form': listening_form,
-        'tags': tags_album_doesnt_have
+        'tags': tags_album_doesnt_have,
+        'songs': songs
     })
-
-
-@login_required
-def album_search(request):
-    query = request.GET.get('q', '')
-    results = []
-
-    if query:
-        try:
-            results = search_spotify_albums(query)
-        except Exception:
-            results = []
-
-    return render(request, 'albums/search.html', {
-        'query': query,
-        'results': results,
-    })
-
-
-@login_required
-def spotify_import(request):
-    if request.method == 'POST':
-        title = request.POST.get('title')
-        artist = request.POST.get('artist')
-        year = request.POST.get('year')
-
-        album = Album.objects.create(
-            title=title,
-            artist=artist,
-            year=year,
-            rating=0,
-            notes='Imported from Spotify',
-            user=request.user
-        )
-
-        return redirect('album-detail', album_id=album.id)
-
-    return redirect('album-search')
-
-
-@login_required
-def associate_tag(request, album_id, tag_id):
-    Album.objects.get(id=album_id).tags.add(tag_id)
-    return redirect('album-detail', album_id=album_id)
-
-
-@login_required
-def remove_tag(request, album_id, tag_id):
-    Album.objects.get(id=album_id).tags.remove(tag_id)
-    return redirect('album-detail', album_id=album_id)
 
 
 class AlbumCreate(LoginRequiredMixin, CreateView):
@@ -113,10 +67,24 @@ class AlbumDelete(LoginRequiredMixin, DeleteView):
 @login_required
 def add_listening(request, album_id):
     form = ListeningForm(request.POST)
+
     if form.is_valid():
         new_listening = form.save(commit=False)
         new_listening.album_id = album_id
         new_listening.save()
+
+    return redirect('album-detail', album_id=album_id)
+
+
+@login_required
+def associate_tag(request, album_id, tag_id):
+    Album.objects.get(id=album_id).tags.add(tag_id)
+    return redirect('album-detail', album_id=album_id)
+
+
+@login_required
+def remove_tag(request, album_id, tag_id):
+    Album.objects.get(id=album_id).tags.remove(tag_id)
     return redirect('album-detail', album_id=album_id)
 
 
@@ -143,10 +111,91 @@ class TagDelete(LoginRequiredMixin, DeleteView):
     success_url = '/tags/'
 
 
+@login_required
+def album_search(request):
+    query = request.GET.get('q', '')
+    results = []
+
+    if query:
+        results = search_spotify_albums(query)
+
+    return render(request, 'albums/search.html', {
+        'query': query,
+        'results': results
+    })
+
+
+@login_required
+def spotify_import(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        artist = request.POST.get('artist')
+        year = request.POST.get('year')
+
+        album = Album.objects.create(
+            title=title,
+            artist=artist,
+            year=year,
+            rating=0,
+            notes='Imported from Spotify',
+            user=request.user
+        )
+
+        return redirect('album-detail', album_id=album.id)
+
+    return redirect('album-search')
+
+
+@login_required
+def song_search(request, album_id):
+    album = Album.objects.get(id=album_id)
+    query = request.GET.get('q', '')
+    results = []
+
+    if query:
+        try:
+            results = search_spotify_tracks(query)
+        except Exception:
+            results = []
+
+    return render(request, 'albums/song_search.html', {
+        'album': album,
+        'query': query,
+        'results': results
+    })
+
+
+@login_required
+def spotify_song_import(request, album_id):
+    if request.method == 'POST':
+        album = Album.objects.get(id=album_id)
+
+        title = request.POST.get('title')
+        artist = request.POST.get('artist')
+        spotify_id = request.POST.get('spotify_id')
+        spotify_url = request.POST.get('spotify_url')
+        preview_url = request.POST.get('preview_url')
+
+        Song.objects.create(
+            title=title,
+            artist=artist,
+            spotify_id=spotify_id,
+            spotify_url=spotify_url,
+            preview_url=preview_url,
+            album=album
+        )
+
+        return redirect('album-detail', album_id=album_id)
+
+    return redirect('album-detail', album_id=album_id)
+
+
 def signup(request):
     error_message = ''
+
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
+
         if form.is_valid():
             user = form.save()
             login(request, user)
@@ -155,5 +204,8 @@ def signup(request):
             error_message = 'Invalid sign up - try again'
 
     form = UserCreationForm()
-    context = {'form': form, 'error_message': error_message}
-    return render(request, 'signup.html', context)
+
+    return render(request, 'signup.html', {
+        'form': form,
+        'error_message': error_message
+    })

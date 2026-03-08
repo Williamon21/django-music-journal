@@ -1,17 +1,15 @@
 import os
 import base64
 import requests
+from django.conf import settings
 
 TOKEN_URL = "https://accounts.spotify.com/api/token"
 SEARCH_URL = "https://api.spotify.com/v1/search"
 
 
 def get_spotify_token():
-    client_id = os.environ.get("SPOTIFY_CLIENT_ID")
-    client_secret = os.environ.get("SPOTIFY_CLIENT_SECRET")
-
-    if not client_id or not client_secret:
-        raise ValueError("Spotify credentials are missing.")
+    client_id = settings.SPOTIFY_CLIENT_ID
+    client_secret = settings.SPOTIFY_CLIENT_SECRET
 
     auth_string = f"{client_id}:{client_secret}"
     auth_bytes = auth_string.encode("utf-8")
@@ -48,3 +46,22 @@ def search_spotify_albums(query):
     response.raise_for_status()
 
     return response.json().get("albums", {}).get("items", [])
+
+
+def search_spotify_tracks(query):
+    token = get_spotify_token()
+
+    headers = {
+        "Authorization": f"Bearer {token}"
+    }
+
+    params = {
+        "q": query,
+        "type": "track",
+        "limit": 10,
+    }
+
+    response = requests.get(SEARCH_URL, headers=headers, params=params, timeout=10)
+    response.raise_for_status()
+
+    return response.json().get("tracks", {}).get("items", [])

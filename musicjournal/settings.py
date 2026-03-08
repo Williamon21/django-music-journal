@@ -125,6 +125,9 @@ LOGIN_URL = 'home'
 LOGIN_REDIRECT_URL = 'album-index'
 LOGOUT_REDIRECT_URL = 'home'
 
+SPOTIFY_CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')
+SPOTIFY_CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 

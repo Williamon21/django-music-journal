@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/albums/search.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+  <h1>Search Songs for {{ album.title }}</h1>
+</section>
+
+<form method="get" class="search-bar">
+  <input
+    type="text"
+    name="q"
+    value="{{ query }}"
+    placeholder="Search for a song or artist..."
+  >
+  <button type="submit" class="btn submit">Search</button>
+</form>
+
+{% if results %}
+<section class="card-container">
+  {% for item in results %}
+    <div class="card spotify-card">
+      {% if item.album.images %}
+        <img
+          src="{{ item.album.images.0.url }}"
+          alt="{{ item.name }}"
+          class="album-cover"
+        >
+      {% endif %}
+
+      <div class="card-content">
+        <h2>{{ item.name }}</h2>
+
+        <p>
+          {% for artist in item.artists %}
+            {{ artist.name }}{% if not forloop.last %}, {% endif %}
+          {% endfor %}
+        </p>
+
+        <p><strong>Album:</strong> {{ item.album.name }}</p>
+
+        <div class="song-actions">
+          <a
+            href="{{ item.external_urls.spotify }}"
+            target="_blank"
+            class="btn secondary"
+          >
+            Open in Spotify
+          </a>
+        </div>
+
+        {% if item.preview_url %}
+          <audio controls class="preview-player">
+            <source src="{{ item.preview_url }}" type="audio/mpeg">
+            Your browser does not support audio previews.
+          </audio>
+        {% endif %}
+
+        <form action="{% url 'spotify-song-import' album.id %}" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="title" value="{{ item.name }}">
+          <input type="hidden" name="artist" value="{{ item.artists.0.name }}">
+          <input type="hidden" name="spotify_id" value="{{ item.id }}">
+          <input type="hidden" name="spotify_url" value="{{ item.external_urls.spotify }}">
+          <input type="hidden" name="preview_url" value="{{ item.preview_url }}">
+          <button type="submit" class="btn submit">Add Song</button>
+        </form>
+      </div>
+    </div>
+  {% endfor %}
+</section>
+{% elif query %}
+  <p class="empty-state">No songs found.</p>
+{% endif %}
+
+{% endblock %}

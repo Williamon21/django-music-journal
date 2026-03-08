@@ -3,7 +3,7 @@
   margin-bottom: 20px;
 }
 
-.form-container {
+.search-bar {
   display: flex;
   justify-content: center;
   gap: 12px;
@@ -11,7 +11,7 @@
   flex-wrap: wrap;
 }
 
-.form-container input {
+.search-bar input {
   width: 340px;
   padding: 12px 16px;
   border-radius: 999px;
@@ -21,8 +21,55 @@
   font-size: 1.5rem;
 }
 
-.card img {
+.spotify-card {
+  width: 280px;
+  background: #181818;
+  border: 1px solid #2a2a2a;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.spotify-card:hover {
+  transform: translateY(-4px);
+  background: #202020;
+}
+
+.album-cover {
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
+}
+
+.card-content {
+  padding: 18px;
+}
+
+.card-content h2 {
+  font-size: 1.8rem;
+  margin: 0 0 8px;
+  color: white;
+}
+
+.card-content p {
+  margin: 6px 0;
+  font-size: 1.4rem;
+  color: #cfcfcf;
+}
+
+.song-actions {
+  margin: 12px 0;
+}
+
+.preview-player {
+  width: 100%;
+  margin: 14px 0;
+}
+
+.empty-state {
+  text-align: center;
+  color: #9ca3af;
+  font-size: 1.5rem;
+  margin-top: 20px;
 }

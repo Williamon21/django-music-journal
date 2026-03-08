@@ -1,46 +1,4 @@
-.album-container {
-  padding: 20px 0 10px;
-  display: flex;
-  justify-content: center;
-}
-
-.album-details {
-  width: 100%;
-  max-width: 800px;
-  background: #181818;
-  padding: 28px;
-  border-radius: 16px;
-  border: 1px solid #2a2a2a;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
-}
-
-.album-details h1 {
-  font-size: 3.2rem;
-  margin: 0 0 10px;
-}
-
-.album-details h2 {
-  font-size: 2rem;
-  color: #b3b3b3;
-  margin: 0 0 16px;
-}
-
-.album-details p {
-  margin: 10px 0;
-}
-
-.album-actions {
-  margin-top: 24px;
-}
-
-.listenings-container {
-  width: 100%;
-  max-width: 1000px;
-  margin: 24px auto 40px;
-}
-
-.listenings,
-.tags {
+.songs {
   background: #181818;
   border: 1px solid #2a2a2a;
   border-radius: 16px;
@@ -49,58 +7,50 @@
   margin-bottom: 24px;
 }
 
-.listenings h2,
-.tags h2 {
-  margin-top: 0;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
+.song-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
   margin-top: 12px;
 }
 
-th,
-td {
-  padding: 12px 10px;
-  text-align: left;
-  font-size: 1.4rem;
+.song-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: #202020;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  flex-wrap: wrap;
 }
 
-th {
+.song-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.song-title {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
   color: white;
-  border-bottom: 1px solid #333;
 }
 
-td {
-  color: #d1d5db;
-  border-bottom: 1px solid #222;
+.song-artist {
+  margin: 4px 0 0;
+  font-size: 1.4rem;
+  color: #b3b3b3;
 }
 
-.toy-container {
+.song-links {
   display: flex;
   align-items: center;
+  gap: 12px;
   flex-wrap: wrap;
-  gap: 10px;
-  margin: 12px 0;
 }
 
-.color-block {
-  opacity: 0.9;
-  height: 22px;
-  width: 22px;
-  border-radius: 999px;
-}
-
-.no-toys,
-.all-toys {
-  font-weight: 600;
-}
-
-.no-toys {
-  color: #ef4444;
-}
-
-.all-toys {
-  color: #1db954;
+.small-player {
+  width: 220px;
 }

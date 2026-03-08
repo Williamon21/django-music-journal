@@ -8,6 +8,7 @@ LISTEN_TYPES = (
     ('R', 'Re-listen'),
 )
 
+
 class Tag(models.Model):
     name = models.CharField(max_length=50)
     color = models.CharField(max_length=20)
@@ -17,7 +18,7 @@ class Tag(models.Model):
 
     def get_absolute_url(self):
         return reverse('tag-detail', kwargs={'pk': self.id})
-    
+
 
 class Album(models.Model):
     title = models.CharField(max_length=100)
@@ -49,3 +50,15 @@ class Listening(models.Model):
 
     class Meta:
         ordering = ['-date']
+
+
+class Song(models.Model):
+    title = models.CharField(max_length=100)
+    artist = models.CharField(max_length=100)
+    spotify_id = models.CharField(max_length=100, blank=True)
+    spotify_url = models.URLField(blank=True)
+    preview_url = models.URLField(blank=True, null=True)
+    album = models.ForeignKey(Album, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.title} - {self.artist}"
