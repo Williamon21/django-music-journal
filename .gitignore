@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Django
+db.sqlite3
+*.log
+local_settings.py
+
+# Environment variables
+.env
+
+# Virtual environments
+venv/
+env/
+.venv/
+pipenv/
+
+# Mac files
+.DS_Store
+
+# VS Code
+.vscode/
+
+# Static build files
+staticfiles/
+
+# Python packaging
+build/
+dist/
+*.egg-info/
