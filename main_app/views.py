@@ -7,8 +7,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import Album, Tag, Song
-from .forms import ListeningForm
+from .models import Album, Tag, Song, Review
+from .forms import ListeningForm, ReviewForm
 from .services.spotify_api import search_spotify_albums, search_spotify_tracks
 
 
@@ -22,7 +22,7 @@ def about(request):
 
 @login_required
 def album_index(request):
-    albums = Album.objects.filter(user=request.user)
+    albums = Album.objects.all()
     return render(request, 'albums/index.html', {'albums': albums})
 
 
@@ -30,19 +30,35 @@ def album_index(request):
 def album_detail(request, album_id):
     album = Album.objects.get(id=album_id)
     listening_form = ListeningForm()
+    review_form = ReviewForm()
 
     tags_album_doesnt_have = Tag.objects.exclude(
         id__in=album.tags.all().values_list('id')
     )
 
     songs = Song.objects.filter(album=album)
+    reviews = Review.objects.filter(album=album)
 
     return render(request, 'albums/detail.html', {
         'album': album,
         'listening_form': listening_form,
+        'review_form': review_form,
         'tags': tags_album_doesnt_have,
-        'songs': songs
+        'songs': songs,
+        'reviews': reviews,
     })
+
+@login_required
+def add_review(request, album_id):
+    form = ReviewForm(request.POST)
+
+    if form.is_valid():
+        new_review = form.save(commit=False)
+        new_review.album_id = album_id
+        new_review.user = request.user
+        new_review.save()
+
+    return redirect('album-detail', album_id=album_id)
 
 
 class AlbumCreate(LoginRequiredMixin, CreateView):
@@ -58,10 +74,16 @@ class AlbumUpdate(LoginRequiredMixin, UpdateView):
     model = Album
     fields = ['artist', 'year', 'rating', 'notes']
 
+    def get_queryset(self):
+        return Album.objects.filter(user=self.request.user)
+
 
 class AlbumDelete(LoginRequiredMixin, DeleteView):
     model = Album
     success_url = '/albums/'
+
+    def get_queryset(self):
+        return Album.objects.filter(user=self.request.user)
 
 
 @login_required
@@ -131,11 +153,13 @@ def spotify_import(request):
         title = request.POST.get('title')
         artist = request.POST.get('artist')
         year = request.POST.get('year')
+        image_url = request.POST.get('image_url')
 
         album = Album.objects.create(
             title=title,
             artist=artist,
             year=year,
+            image_url=image_url,
             rating=0,
             notes='Imported from Spotify',
             user=request.user

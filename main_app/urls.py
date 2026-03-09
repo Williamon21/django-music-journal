@@ -21,6 +21,7 @@ urlpatterns = [
 
     path('albums/<int:album_id>/songs/search/', views.song_search, name='song-search'),
     path('albums/<int:album_id>/songs/import/', views.spotify_song_import, name='spotify-song-import'),
+    path('albums/<int:album_id>/add-review/', views.add_review, name='add-review'),
 
     path('tags/', views.TagList.as_view(), name='tag-index'),
     path('tags/create/', views.TagCreate.as_view(), name='tag-create'),

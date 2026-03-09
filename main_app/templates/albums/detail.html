@@ -8,8 +8,17 @@
 {% block content %}
 
 <section class="page-header">
-  <h1>{{ album.title }}</h1>
-  <h2>{{ album.artist }} ({{ album.year }})</h2>
+
+  {% if album.image_url %}
+    <img src="{{ album.image_url }}" class="album-detail-cover">
+  {% endif %}
+
+  <div class="album-header-text">
+    <h1>{{ album.title }}</h1>
+    <h2>{{ album.artist }} ({{ album.year }})</h2>
+    <p><small>Added by {{ album.user.username }}</small></p>
+  </div>
+
 </section>
 
 <section class="album-info">
@@ -19,15 +28,14 @@
   <p><strong>Notes:</strong></p>
   <p>{{ album.notes }}</p>
 
+  {% if request.user == album.user %}
   <div class="album-actions">
     <a href="{% url 'album-update' album.id %}" class="btn secondary">Edit</a>
     <a href="{% url 'album-delete' album.id %}" class="btn danger">Delete</a>
   </div>
+  {% endif %}
 
 </section>
-
-
-<!-- LISTENING HISTORY -->
 
 <section class="feedings">
 
@@ -43,9 +51,6 @@
 
 </section>
 
-
-<!-- TAGS -->
-
 <section class="toys">
 
   <div class="subsection-title">
@@ -56,16 +61,17 @@
 
     {% if album.tags.count %}
       {% for tag in album.tags.all %}
-        <div class="toy-container">
+      <div class="toy-container">
+        <p>{{ tag.name }}</p>
 
-          <p>{{ tag.name }}</p>
+        {% if request.user == album.user %}
+        <form action="{% url 'remove-tag' album.id tag.id %}" method="POST">
+          {% csrf_token %}
+          <button type="submit" class="btn secondary">Remove</button>
+        </form>
+        {% endif %}
 
-          <form action="{% url 'remove-tag' album.id tag.id %}" method="POST">
-            {% csrf_token %}
-            <button type="submit" class="btn secondary">Remove</button>
-          </form>
-
-        </div>
+      </div>
       {% endfor %}
     {% else %}
       <p>No tags yet</p>
@@ -73,31 +79,26 @@
 
   </div>
 
+  {% if request.user == album.user %}
   <div class="subsection-title">
     <h3>Add Tag</h3>
   </div>
 
   <div class="subsection-content">
-
     {% for tag in tags %}
-      <div class="toy-container">
+    <div class="toy-container">
+      <p>{{ tag.name }}</p>
 
-        <p>{{ tag.name }}</p>
-
-        <form action="{% url 'associate-tag' album.id tag.id %}" method="POST">
-          {% csrf_token %}
-          <button type="submit" class="btn submit">Add</button>
-        </form>
-
-      </div>
+      <form action="{% url 'associate-tag' album.id tag.id %}" method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn submit">Add</button>
+      </form>
+    </div>
     {% endfor %}
-
   </div>
+  {% endif %}
 
 </section>
-
-
-<!-- SONGS (SPOTIFY IMPORT) -->
 
 <section class="songs">
 
@@ -114,11 +115,8 @@
   <div class="subsection-content">
 
     {% if songs %}
-
       <div class="song-list">
-
         {% for song in songs %}
-
         <div class="song-row">
 
           <div class="song-meta">
@@ -127,7 +125,6 @@
           </div>
 
           <div class="song-links">
-
             {% if song.preview_url %}
               <audio controls class="preview-player small-player">
                 <source src="{{ song.preview_url }}" type="audio/mpeg">
@@ -139,21 +136,45 @@
                 Open in Spotify
               </a>
             {% endif %}
-
           </div>
 
         </div>
-
         {% endfor %}
-
       </div>
-
     {% else %}
-
       <p class="no-toys">No songs added yet.</p>
-
     {% endif %}
 
+  </div>
+
+</section>
+
+<section class="reviews">
+
+  <div class="subsection-title">
+    <h2>Reviews ({{ reviews|length }})</h2>
+  </div>
+
+  <form action="{% url 'add-review' album.id %}" method="POST" class="subsection-content">
+    {% csrf_token %}
+    {{ review_form.as_p }}
+    <button type="submit" class="btn submit">Post Review</button>
+  </form>
+
+  <div class="subsection-content">
+    {% if reviews %}
+      <div class="review-list">
+        {% for review in reviews %}
+          <div class="review-row">
+            <p><strong>{{ review.user.username }}</strong> — {{ review.rating }}/10</p>
+            <p>{{ review.content }}</p>
+            <p><small>{{ review.created_at }}</small></p>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p>No reviews yet.</p>
+    {% endif %}
   </div>
 
 </section>

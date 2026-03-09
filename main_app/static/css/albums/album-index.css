@@ -27,7 +27,7 @@
 }
 
 .card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-6px);
   background: #202020;
 }
 
@@ -37,12 +37,15 @@
   display: block;
 }
 
+/* Album cover image */
 .album-cover {
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
+  border-bottom: 1px solid #2a2a2a;
 }
 
+/* Album text section */
 .card-content {
   padding: 18px;
 }

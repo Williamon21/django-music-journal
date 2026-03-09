@@ -1,5 +1,5 @@
 from django import forms
-from .models import Listening
+from .models import Listening, Review
 
 class ListeningForm(forms.ModelForm):
     class Meta:
@@ -11,3 +11,7 @@ class ListeningForm(forms.ModelForm):
                 attrs={'type': 'date'}
             ),
         }
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['rating', 'content']

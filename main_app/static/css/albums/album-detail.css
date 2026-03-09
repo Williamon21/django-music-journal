@@ -54,3 +54,51 @@
 .small-player {
   width: 220px;
 }
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.album-detail-cover {
+  width: 220px;
+  border-radius: 12px;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.5);
+}
+
+.album-header-text h1 {
+  font-size: 32px;
+}
+
+.album-header-text h2 {
+  color: #b3b3b3;
+}
+
+.reviews {
+  background: #181818;
+  border: 1px solid #2a2a2a;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.review-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.review-row {
+  background: #202020;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.review-row p {
+  margin: 6px 0;
+}

@@ -55,6 +55,7 @@
       <input type="hidden" name="title" value="{{ item.name }}">
       <input type="hidden" name="artist" value="{{ item.artists.0.name }}">
       <input type="hidden" name="year" value="{{ item.release_date|slice:":4" }}">
+      <input type="hidden" name="image_url" value="{{ item.images.0.url }}">
 
       <button type="submit" class="btn submit">
         Add to Journal

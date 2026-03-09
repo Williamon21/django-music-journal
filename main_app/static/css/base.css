@@ -43,21 +43,29 @@ header {
   width: 100%;
   background: var(--nav-bg-ff);
   border-bottom: var(--borders);
+  padding-top: 10px;
 }
+
+/* LOGO */
 
 .header-logo-container {
   margin: auto;
-  padding: 14px 20px 6px;
+  padding: 20px 20px 10px;
   text-align: center;
 }
 
 .header-logo-container img {
-  max-height: 48px;
+  height: 110px !important;
+  width: auto !important;
+}
+
+.header-logo-container img:hover {
+  transform: scale(1.06);
 }
 
 nav {
   margin: 0;
-  padding: 10px 16px 16px;
+  padding: 12px 16px 18px;
 }
 
 nav ul {
@@ -68,18 +76,14 @@ nav ul {
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 12px;
-}
-
-nav li {
-  padding: 0;
+  gap: 18px;
 }
 
 nav a {
   text-decoration: none;
   color: var(--text-color);
   font-weight: 600;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   transition: color 0.2s ease;
 }
 

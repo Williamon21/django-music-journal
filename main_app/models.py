@@ -28,6 +28,7 @@ class Album(models.Model):
     notes = models.TextField(max_length=500)
     tags = models.ManyToManyField(Tag, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    image_url = models.URLField(blank=True)
 
     def __str__(self):
         return f"{self.title} - {self.artist}"
@@ -62,3 +63,16 @@ class Song(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.artist}"
+    
+class Review(models.Model):
+    album = models.ForeignKey(Album, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.IntegerField()
+    content = models.TextField(max_length=500)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Review by {self.user.username} on {self.album.title}"
+
+    class Meta:
+        ordering = ['-created_at']

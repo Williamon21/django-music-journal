@@ -12,11 +12,18 @@
 
 <section class="card-container">
   {% for album in albums %}
+
   <div class="card">
     <a href="{% url 'album-detail' album.id %}">
+
+      {% if album.image_url %}
+        <img src="{{ album.image_url }}" class="album-cover">
+      {% endif %}
+
       <div class="card-content">
         <h2 class="card-title">{{ album.title }}</h2>
         <p>{{ album.artist }} ({{ album.year }})</p>
+        <p><small>Added by {{ album.user.username }}</small></p>
 
         {% if album.rating >= 9 %}
           <p><strong>Rating:</strong> {{ album.rating }}/10 ⭐</p>
@@ -26,8 +33,10 @@
 
         <p><small>{{ album.notes }}</small></p>
       </div>
+
     </a>
   </div>
+
   {% endfor %}
 </section>
 {% endblock %}
