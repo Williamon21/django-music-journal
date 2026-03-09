@@ -8,7 +8,11 @@
 Music Journal is a full-stack Django web application that allows users to track albums they enjoy, write notes about them, rate them, and explore music using the Spotify API.
 
 The app functions as a personal music diary while also allowing users to browse albums added by other users and leave reviews.
+
+Deployed app: https://musicjournal-ecccb8d477a5.herokuapp.com/
+
 ---------------------------------------------------------------------------------------------------------------------------------
+
 📚 Description
 
 Music Journal allows users to:
@@ -23,7 +27,9 @@ Music Journal allows users to:
 • View albums added by other users
 
 The goal of the project was to build a full CRUD Django application with external API integration and user authentication.
+
 -----------------------------------------------------------------------------------------------------------------------------
+
 🧠 Technologies Used
 
 Backend
@@ -49,7 +55,9 @@ Spotify Web API
 Authentication
 
 Django built-in authentication system
+
 --------------------------------------------------------------------------------------------------------------------------------
+
 🔗 Spotify API Integration
 
 The app connects to the Spotify Web API using a Client Credentials authentication flow.
@@ -67,7 +75,9 @@ Retrieve Spotify links
 Retrieve song preview URLs
 
 Users can then import albums or songs from Spotify directly into their journal.
+
 -------------------------------------------------------------------------------------------------------------------------------
+
 👤 User Features
 
 Users can:
@@ -89,7 +99,9 @@ Preview songs
 Leave reviews on albums
 
 Users can also view albums created by other users, but only the album owner can edit or delete their album.
+
 -------------------------------------------------------------------------------------------------------------------------
+
 🗂 Models
 
 The main database models include:
@@ -113,7 +125,9 @@ Stores Spotify song information linked to an album.
 Review
 
 Allows users to leave public reviews on album pages.
+
 ------------------------------------------------------------------------------------------------------------------------
+
 📄 Key Pages
 
 Home Page
@@ -130,7 +144,9 @@ Allows users to search Spotify for albums to import.
 
 Song Search
 Allows users to search Spotify for songs and attach them to albums.
+
 ------------------------------------------------------------------------------------------------------------------------------
+
 🔐 Authentication & Authorization
 
 The app uses Django’s authentication system.
@@ -144,7 +160,9 @@ Any user can view albums
 Only the album owner can edit or delete an album
 
 Reviews can be posted by any logged-in user
+
 ------------------------------------------------------------------------------------------------------------------------------
+
 🖼 Screenshots
 
 (Add screenshots of your app here before submission)
@@ -158,7 +176,9 @@ Album detail page
 Spotify search page
 
 Song preview feature
+
 -------------------------------------------------------------------------------------------------------------------------------------
+
 🚀 Future Improvements
 
 Possible future features include:
